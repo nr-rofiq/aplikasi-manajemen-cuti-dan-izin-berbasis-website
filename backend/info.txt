@@ -1,0 +1,6 @@
+===== Library =====
+1. Fiber = go get github.com/gofiber/fiber/v2 (web framework)
+
+2. GodotEnv = go get github.com/joho/godotenv (utk mengambil data dari .env/environment variable)
+
+3. MySQL = go get -u github.com/go-sql-driver/mysql (driver MySQL)
