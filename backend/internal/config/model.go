@@ -4,12 +4,18 @@ package config
 type Config struct {
 	Server   Server
 	Database Database
+	Jwt      Jwt
 }
 
 // Konfigurasi Server
 type Server struct {
 	Host string
 	Port string
+}
+
+type Jwt struct {
+	Key string
+	Exp int
 }
 
 // Konfigurasi Database
@@ -20,4 +26,3 @@ type Database struct {
 	User string
 	Pass string
 }
-

@@ -4,3 +4,14 @@
 2. GodotEnv = go get github.com/joho/godotenv (utk mengambil data dari .env/environment variable)
 
 3. MySQL = go get -u github.com/go-sql-driver/mysql (driver MySQL)
+
+4. Validator = go get github.com/go-playground/validator/v10 (Validasi)
+
+5. JWT = go get github.com/golang-jwt/jwt/v5 github.com/gofiber/contrib/jwt (Authentication & Authorization)
+
+6. Bcrypt = go get golang.org/x/crypto/bcrypt (Hashing Password)
+
+JWT setiap 10 menit, harus generate ulang token
+
+
+Hashing password pakai Bcrypt

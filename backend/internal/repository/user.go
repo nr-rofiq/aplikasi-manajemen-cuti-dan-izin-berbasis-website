@@ -1,10 +1,13 @@
 package repository
 
+// Query SQL
+
 import (
 	"backend/domain"
+	"backend/internal/util"
 	"context"
 	"database/sql"
-	"errors"
+	"log"
 )
 
 // Implementasi interface dari "domain >> user.go"
@@ -48,7 +51,7 @@ func (ur *userRepository) FindAll(ctx context.Context) ([]domain.User, error) {
 // FindById implements domain.UserRepository.
 func (ur *userRepository) FindById(ctx context.Context, id string) (domain.User, error) {
 	script := "SELECT * FROM users WHERE id = ?"
-	rows, err := ur.db.QueryContext(ctx, script)
+	rows, err := ur.db.QueryContext(ctx, script, id)
 	if err != nil {
 		panic(err)
 	}
@@ -62,15 +65,23 @@ func (ur *userRepository) FindById(ctx context.Context, id string) (domain.User,
 		}
 
 		return user, nil
-	} else {
-		return user, errors.New("user is not found")
-	}
+	} 
+	// else {
+	// 	return user, errors.New("user is not found")
+	// }
+
+	return user, nil
 }
 
 // Save implements domain.UserRepository.
 func (ur *userRepository) Save(ctx context.Context, u *domain.User) error {
+	hashedPassword, err := util.HashPassword(u.Password)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	script := "INSERT INTO users(id, nama, password, jabatan, tmt) VALUES (?, ?, ?, ?, ?)"
-	_, err := ur.db.ExecContext(ctx, script, u.ID, u.Nama, u.Password, u.Jabatan, u.TMT)
+	_, err = ur.db.ExecContext(ctx, script, u.ID, u.Nama, hashedPassword, u.Jabatan, u.TMT)
 	if err != nil {
 		return err
 	}
@@ -80,8 +91,8 @@ func (ur *userRepository) Save(ctx context.Context, u *domain.User) error {
 
 // Update implements domain.UserRepository.
 func (ur *userRepository) Update(ctx context.Context, u *domain.User) error {
-	script := "UPDATE users SET nama = ? WHERE id = ?"
-	_, err := ur.db.ExecContext(ctx, script, u.Nama, u.ID)
+	script := "UPDATE users SET nama = ?, password = ?, jabatan = ? WHERE id = ?"
+	_, err := ur.db.ExecContext(ctx, script, u.Nama, u.Password, u.Jabatan, u.ID)
 	if err != nil {
 		return err
 	}

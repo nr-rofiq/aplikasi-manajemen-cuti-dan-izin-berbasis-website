@@ -1,12 +1,15 @@
 package main
 
 import (
+	"backend/dto"
 	"backend/internal/api"
 	"backend/internal/config"
 	"backend/internal/connection"
 	"backend/internal/repository"
 	"backend/internal/service"
+	"net/http"
 
+	jwtMid "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -18,9 +21,19 @@ func main() {
 
 	app := fiber.New()
 
+	jwtMidd := jwtMid.New(jwtMid.Config{
+		SigningKey: jwtMid.SigningKey{Key: []byte(cnf.Jwt.Key)},
+		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
+			return ctx.Status(http.StatusUnauthorized).JSON(dto.CreateResponseError("endpoint perlu token, silahkan login dulu"))
+		},
+	})
+
 	userRepository := repository.NewUser(dbConnection)
 	userService := service.NewUser(userRepository)
-	api.NewUser(app, userService)
+	api.NewUser(app, userService, jwtMidd)
+
+	authService := service.NewAuth(cnf, userRepository)
+	api.NewAuth(app, authService)
 
 	// Routing
 	app.Get("/", func(ctx *fiber.Ctx) error {
@@ -32,7 +45,7 @@ func main() {
 		panic(err)
 	}
 
-	// Paused at 41:00
+	// Paused Part 9
 }
 
 // SQL
@@ -50,11 +63,12 @@ func main() {
 // DESC users;
 
 // INSERT INTO users(nip, nama, password, jabatan, tmt)
-// VALUES ('200208152025041001', 'Nur Rofiq', 'nurrofiq', 'Auditor Terampil', '2025-04-01'),
-// 		('200011282025041001', 'Aqsal Ramadhan Arrijal', 'aqsalramadhanarrijal', 'Auditor Terampil', '2025-04-01'),
-// 		('200103272025041001', 'Eko Khafid Firmansyah', 'ekokhafidfirmansyah', 'Auditor Terampil', '2025-04-01'),
-// 		('199106062025041001', 'Ibnu Khotamul Aulad', 'ibnukhotamulaulad', 'Auditor Terampil', '2025-04-01'),
-// 		('199007232025041001', 'Ardi Perdana Sukma', 'ardiperdanasukma', 'Auditor Terampil', '2025-04-01');
+// VALUES ('200208152025041001', 'Nur Rofiq', 'bpkp2025', 'Auditor Terampil', '2025-04-01'),
+// 		('200011282025041001', 'Aqsal Ramadhan Arrijal', 'bpkp2025', 'Auditor Terampil', '2025-04-01'),
+// 		('200103272025041001', 'Eko Khafid Firmansyah', 'bpkp2025', 'Auditor Terampil', '2025-04-01'),
+// 		('199106062025041001', 'Ibnu Khotamul Aulad', 'bpkp2025', 'Auditor Terampil', '2025-04-01'),
+// 		('199007232025041001', 'Ardi Perdana Sukma', 'bpkp2025', 'Auditor Terampil', '2025-04-01'),
+// 		('555566665555666656', 'Kak Yudistari', 'bpkp2025', 'Mentor', '2023-08-10');
 
 // SELECT * FROM users;
 
