@@ -51,6 +51,19 @@ const Login = () => {
 			year: "numeric",
 		});
 
+	const colorPill = (type: string) => {
+		switch (type) {
+			case "Disetujui":
+				return "bg-green-200 text-green-600";
+			case "Menunggu":
+				return "bg-yellow-200 text-yellow-600";
+			case "Ditolak":
+				return "bg-red-200 text-red-600";
+			default:
+				return null;
+		}
+	};
+
 	useEffect(() => {
 		if (chooseDate.end) {
 			setIsOpen((prev) => ({ ...prev, date: false }));
@@ -69,6 +82,7 @@ const Login = () => {
 				handleClick={handleClick}
 				handleItemClick={handleItemClick}
 				format={format}
+				colorPill={colorPill}
 			/>
 		</div>
 	);
