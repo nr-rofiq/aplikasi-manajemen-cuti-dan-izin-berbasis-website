@@ -10,7 +10,7 @@ interface HistoryApproval {
 	durasi: number;
 	jenis_cuti: string;
 	status: string;
-	alasan: string;
+	alasan_cuti: string;
 	alasan_ditolak: string;
 }
 interface AdminView {
@@ -120,7 +120,7 @@ const AdminView = ({
 									durasi,
 									jenis_cuti,
 									status,
-									alasan,
+									alasan_cuti,
 									alasan_ditolak,
 								}: HistoryApproval) => (
 									<tr className="border-b border-gray-700" key={id}>
@@ -150,7 +150,7 @@ const AdminView = ({
 														duration: durasi,
 														type: jenis_cuti,
 														status,
-														reason: alasan,
+														reason: alasan_cuti,
 														rejectedReason: alasan_ditolak,
 													});
 													if (status == "Menunggu") {

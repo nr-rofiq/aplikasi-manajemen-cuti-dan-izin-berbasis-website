@@ -15,7 +15,7 @@ interface HistoryData {
 	status: string;
 	id: number;
 	durasi: number;
-	alasan: string;
+	alasan_cuti: string;
 	alasan_ditolak: string;
 }
 interface UserView {
@@ -178,7 +178,7 @@ const UserView = ({
 										status,
 										id,
 										durasi,
-										alasan,
+										alasan_cuti,
 										alasan_ditolak,
 									}: HistoryData) => (
 										<tr className="border-b border-gray-700" key={id}>
@@ -201,7 +201,7 @@ const UserView = ({
 															type: jenis_cuti,
 															duration: durasi,
 															status,
-															alasan,
+															alasan: alasan_cuti,
 															alasanDitolak: alasan_ditolak,
 														});
 														openDetailModal();

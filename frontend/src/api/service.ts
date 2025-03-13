@@ -39,7 +39,7 @@ interface HistoryCuti {
 				tanggal: string;
 				jenis_cuti: string;
 				durasi: number;
-				alasan: string;
+				alasan_cuti: string;
 				status: string;
 				alasan_ditolak: string;
 			},
@@ -57,7 +57,7 @@ interface PengajuanCuti {
 			durasi: number;
 			jenis_cuti: string;
 			status: string;
-			alasan: string;
+			alasan_cuti: string;
 			alasan_ditolak: string;
 		},
 	];
