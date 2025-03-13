@@ -2,6 +2,17 @@ import DatePicker from "react-datepicker";
 import Modal from "../Modal/Modal";
 
 interface ModalDetail {
+	selectedCuti: {
+		id: number;
+		nama: string;
+		start: Date;
+		end: Date;
+		duration: number;
+		type: string;
+		status: string;
+		reason: string;
+		rejectedReason: string;
+	} | null;
 	detailModal: boolean;
 	colorPill: (
 		type: string
@@ -10,35 +21,28 @@ interface ModalDetail {
 		| "bg-yellow-200 text-yellow-600"
 		| "bg-red-200 text-red-600"
 		| null;
-	selectedCuti: {
-		date: Date;
-		type: string;
-		duration: number;
-		status: string;
-		alasan: string;
-		alasanDitolak: string;
-	} | null;
-	handleClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-	closeDetailModal: () => void;
 	setSelectedCuti: React.Dispatch<
 		React.SetStateAction<{
-			date: Date;
-			type: string;
+			id: number;
+			nama: string;
+			start: Date;
+			end: Date;
 			duration: number;
+			type: string;
 			status: string;
-			alasan: string;
-			alasanDitolak: string;
+			reason: string;
+			rejectedReason: string;
 		} | null>
 	>;
+	closeDetailModal: () => void;
 }
 
 export const ModalDetail = ({
+	selectedCuti,
 	detailModal,
 	colorPill,
-	selectedCuti,
-	handleClick,
-	closeDetailModal,
 	setSelectedCuti,
+	closeDetailModal,
 }: ModalDetail) => {
 	return (
 		selectedCuti && (
@@ -60,12 +64,23 @@ export const ModalDetail = ({
 						<div>
 							<div className="flex relative gap-1 flex-1 flex-col">
 								<p className="block mb-2 text-sm font-medium text-gray-900">
+									Nama
+								</p>
+								<input
+									className="bg-gray-50 border focus:ring rounded-md border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 text-start block p-2"
+									disabled
+									value={selectedCuti.nama}
+								/>
+							</div>
+						</div>
+						<div>
+							<div className="flex relative gap-1 flex-1 flex-col">
+								<p className="block mb-2 text-sm font-medium text-gray-900">
 									Jenis Cuti
 								</p>
 								<button
 									className="bg-gray-50 border focus:ring rounded-md border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 text-start block p-2"
 									type="button"
-									onClick={handleClick}
 									disabled
 								>
 									{selectedCuti.type}
@@ -79,7 +94,7 @@ export const ModalDetail = ({
 								</p>
 								<DatePicker
 									className="bg-gray-50 border focus:ring rounded-md border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 text-start block p-2"
-									value={selectedCuti.date.toLocaleDateString("id-ID")}
+									value={selectedCuti.start.toLocaleDateString("id-ID")}
 									disabled
 								/>
 							</div>
@@ -89,10 +104,7 @@ export const ModalDetail = ({
 								</p>
 								<DatePicker
 									className="bg-gray-50 border focus:ring rounded-md border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 text-start block p-2"
-									value={new Date(
-										selectedCuti.date.getTime() +
-											selectedCuti.duration * 24 * 60 * 60 * 1000
-									).toLocaleDateString("id-ID")}
+									value={selectedCuti.end.toLocaleDateString("id-ID")}
 									disabled
 								/>
 							</div>
@@ -108,7 +120,7 @@ export const ModalDetail = ({
 								className="bg-gray-50 w-full focus:ring border rounded-md border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 text-start block p-2"
 								name="reason"
 								placeholder="Alasan Cuti"
-								value={selectedCuti.alasan}
+								value={selectedCuti.reason}
 								wrap="true"
 								disabled
 							/>
@@ -125,7 +137,7 @@ export const ModalDetail = ({
 									className="bg-gray-50 w-full focus:ring border rounded-md border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 text-start block p-2"
 									name="reason"
 									placeholder="Alasan Ditolak"
-									value={selectedCuti.alasanDitolak}
+									value={selectedCuti.rejectedReason}
 									wrap="true"
 									disabled
 								/>
@@ -144,7 +156,7 @@ export const ModalDetail = ({
 									type="text"
 									name="jumlah cuti"
 									disabled
-									value={2}
+									value={selectedCuti.duration}
 								/>
 							</div>
 						)}

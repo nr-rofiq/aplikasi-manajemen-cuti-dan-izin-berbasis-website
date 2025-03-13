@@ -1,11 +1,23 @@
-import { cardDataUser, cutiHistory } from "../../../data/dummy";
+import { cardDataUser } from "../../../data/dummy";
 import { ModalDetail } from "../../../components/ModalUser/ModalDetail";
 import { ModalAdd } from "../../../components/ModalUser/ModalAdd";
-import { useAuth } from "../../../auth";
 import { FormEvent } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { historyCutiService } from "../../../api/service";
 
+interface SaldoCuti {
+	cuti_tersedia: number;
+	cuti_terpakai: number;
+	menunggu: number;
+	disetujui: number;
+}
+interface HistoryData {
+	tanggal: string;
+	jenis_cuti: string;
+	status: string;
+	id: number;
+	durasi: number;
+	alasan: string;
+	alasan_ditolak: string;
+}
 interface UserView {
 	addModal: boolean;
 	detailModal: boolean;
@@ -17,6 +29,8 @@ interface UserView {
 		type: string;
 		duration: number;
 		status: string;
+		alasan: string;
+		alasanDitolak: string;
 	} | null;
 	handleDateChange: (date: Date | null, type: string) => void;
 	openAddModal: () => void;
@@ -39,6 +53,8 @@ interface UserView {
 			type: string;
 			duration: number;
 			status: string;
+			alasan: string;
+			alasanDitolak: string;
 		} | null>
 	>;
 	convertTypeCuti: (
@@ -54,6 +70,16 @@ interface UserView {
 	handleTextChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 	reason: string;
 	onFormSubmit: (e: FormEvent<HTMLFormElement>) => Promise<void>;
+	isPending: boolean;
+	historyData:
+		| {
+				data: {
+					saldo: SaldoCuti;
+					histori: [HistoryData];
+				};
+		  }
+		| undefined;
+	name: string | undefined;
 }
 
 const UserView = ({
@@ -78,22 +104,18 @@ const UserView = ({
 	handleTextChange,
 	reason,
 	onFormSubmit,
+	isPending,
+	historyData,
+	name,
 }: UserView) => {
-	const { data } = useAuth();
-	const { data: historyData, isPending } = useQuery({
-		queryKey: ["historyCuti"],
-		queryFn: async () => await historyCutiService(),
-	});
-
-	if (!isPending) console.log(historyData?.data);
 	return (
-		<>
+		<div className="h-screen p-4 lg:p-8">
 			<div className="flex justify-between">
 				<div>
 					<h2 className="text-xl cursor-default font-bold leading-tight tracking-tight">
 						Dashboard
 					</h2>
-					<p className="text-gray-400">Selamat datang, {data?.nama}</p>
+					<p className="text-gray-400">Selamat datang, {name}</p>
 				</div>
 				<div>
 					<button
@@ -107,20 +129,31 @@ const UserView = ({
 			<div className="mt-4">
 				<div className="flex h-[96px] gap-4">
 					{cardDataUser.map(
-						({ title, day }: { title: string; day: string }, id: number) => (
+						(
+							{
+								title,
+								key,
+							}: {
+								title: string;
+								key: keyof SaldoCuti;
+							},
+							id: number
+						) => (
 							<div
 								className="flex justify-center flex-col space-y-2 p-4 shadow-lg rounded-md bg-white flex-1"
 								key={id}
 							>
 								<p className="text-sm text-gray-500">{title}</p>
-								<h3 className="font-bold text-xl">{day}</h3>
+								<h3 className="font-bold text-xl">
+									{historyData?.data.saldo[key]}
+								</h3>
 							</div>
 						)
 					)}
 				</div>
 			</div>
-			<div className="bg-white h-[454px] shadow-lg p-5 rounded-md mt-4 flex justify-between flex-col">
-				<div className="flex-1">
+			<div className="bg-white h-[454px] shadow-lg p-5 rounded-md mt-4 flex flex-col">
+				<div className="flex-1 overflow-auto">
 					<h1 className="text-xl font-bold mb-4 border-b pb-2">Histori Cuti</h1>
 					<table className="w-full text-left">
 						<thead className="bg-gray-200">
@@ -132,24 +165,32 @@ const UserView = ({
 								<th className="px-4 py-2">Aksi</th>
 							</tr>
 						</thead>
-						<tbody>
-							{/* {isPending ? (
-								<span>Loading...</span>
+						<tbody className="h-full">
+							{isPending ? (
+								<tr>
+									<td>Loading...</td>
+								</tr>
 							) : (
-								historyData?.map(
-									({ id:number, tanggal:string, jenis_cuti:string, durasi:number, status:string }) => (
+								historyData?.data?.histori?.map(
+									({
+										tanggal,
+										jenis_cuti,
+										status,
+										id,
+										durasi,
+										alasan,
+										alasan_ditolak,
+									}: HistoryData) => (
 										<tr className="border-b border-gray-700" key={id}>
-											<td className="px-4 py-2">
-												{new Date(tanggal).toLocaleDateString("id-ID")}
-											</td>
+											<td className="px-4 py-2">{tanggal}</td>
 											<td className="px-4 py-2">{jenis_cuti}</td>
 											<td className="px-4 py-2">{durasi} Hari</td>
 											<td className="px-4 py-2">
-												<span
-													className={`font-bold px-2 py-1 rounded-md text-sm ${colorPill(status)}`}
+												<p
+													className={`font-bold w-fit px-2 py-1 rounded-md text-sm ${colorPill(status)}`}
 												>
 													{status}
-												</span>
+												</p>
 											</td>
 											<td className="px-4 py-2">
 												<button
@@ -160,6 +201,8 @@ const UserView = ({
 															type: jenis_cuti,
 															duration: durasi,
 															status,
+															alasan,
+															alasanDitolak: alasan_ditolak,
 														});
 														openDetailModal();
 													}}
@@ -170,66 +213,9 @@ const UserView = ({
 										</tr>
 									)
 								)
-							)} */}
-
-							{cutiHistory.map(
-								(
-									{
-										date,
-										type,
-										duration,
-										status,
-									}: {
-										date: Date;
-										type: string;
-										duration: number;
-										status: string;
-									},
-									id: number
-								) => (
-									<tr className="border-b border-gray-700" key={id}>
-										<td className="px-4 py-2">
-											{date.toLocaleDateString("id-ID")}
-										</td>
-										<td className="px-4 py-2">{type}</td>
-										<td className="px-4 py-2">{duration} Hari</td>
-										<td className="px-4 py-2">
-											<span
-												className={`font-bold px-2 py-1 rounded-md text-sm ${colorPill(
-													status
-												)}`}
-											>
-												{status}
-											</span>
-										</td>
-										<td className="px-4 py-2">
-											<button
-												className="bg-indigo-800 text-white cursor-pointer px-4 py-1 rounded-md hover:bg-indigo-900"
-												onClick={() => {
-													setSelectedCuti({ date, type, duration, status });
-													openDetailModal();
-												}}
-											>
-												Detail
-											</button>
-										</td>
-									</tr>
-								)
 							)}
 						</tbody>
 					</table>
-				</div>
-				<div className="flex justify-between items-center mt-4">
-					<p>Menampilkan 1 - 3 dari 10 data</p>
-					<div className="flex items-center">
-						<button className="bg-indigo-800 rounded-l-md cursor-pointer text-white px-4 py-2 hover:bg-indigo-900">
-							Sebelumnya
-						</button>
-						<p className="py-2 px-4 bg-gray-200">1</p>
-						<button className="bg-indigo-800 rounded-r-md text-white cursor-pointer px-4 py-2 hover:bg-indigo-900">
-							Selanjutnya
-						</button>
-					</div>
 				</div>
 			</div>
 			<ModalAdd
@@ -256,7 +242,7 @@ const UserView = ({
 				closeDetailModal={closeDetailModal}
 				setSelectedCuti={setSelectedCuti}
 			/>
-		</>
+		</div>
 	);
 };
 

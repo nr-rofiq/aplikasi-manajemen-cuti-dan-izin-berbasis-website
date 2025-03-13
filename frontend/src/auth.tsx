@@ -8,6 +8,7 @@ import {
 } from "react";
 import { loginService } from "../src/api/service";
 import { useMutation } from "@tanstack/react-query";
+import { sleep } from "./utils";
 
 export interface AuthContext {
 	isAuthenticated: boolean;
@@ -61,6 +62,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	);
 
 	const logout = useCallback(async () => {
+		sleep(100);
+
 		setStoredData(null);
 		setData(null);
 	}, []);

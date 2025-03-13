@@ -1,15 +1,19 @@
-import DatePicker from "react-datepicker";
-import { cutiEmployeesData, statusCuti } from "../../../data/dummy";
+import React, { FormEvent } from "react";
+import { ModalApproval } from "../../../components/ModalAdmin/ModalApproval";
+import { ModalDetail } from "../../../components/ModalAdmin/ModalDetail";
 
+interface HistoryApproval {
+	id: number;
+	nama: string;
+	start_date: string;
+	end_date: string;
+	durasi: number;
+	jenis_cuti: string;
+	status: string;
+	alasan: string;
+	alasan_ditolak: string;
+}
 interface AdminView {
-	start: Date | null;
-	end: Date | null;
-	status: boolean;
-	date: boolean;
-	selectedValue: string | null;
-	handleDateChange: (update: [Date | null, Date | null]) => void;
-	handleClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-	handleItemClick: (e: React.MouseEvent<HTMLLIElement>) => void;
 	format: (date: Date) => void;
 	colorPill: (
 		type: string
@@ -18,22 +22,70 @@ interface AdminView {
 		| "bg-yellow-200 text-yellow-600"
 		| "bg-red-200 text-red-600"
 		| null;
+	historyApproval: { message: string; data: [HistoryApproval] } | undefined;
+	isPending: boolean;
+	setSelectedCuti: React.Dispatch<
+		React.SetStateAction<{
+			id: number;
+			nama: string;
+			start: Date;
+			end: Date;
+			duration: number;
+			type: string;
+			status: string;
+			reason: string;
+			rejectedReason: string;
+		} | null>
+	>;
+	selectedCuti: {
+		id: number;
+		nama: string;
+		start: Date;
+		end: Date;
+		duration: number;
+		type: string;
+		status: string;
+		reason: string;
+		rejectedReason: string;
+	} | null;
+	openApprovalModal: () => void;
+	openDetailModal: () => void;
+	closeApprovalModal: () => void;
+	closeDetailModal: () => void;
+	approvalModal: boolean;
+	detailModal: boolean;
+	selectedValue: string | null;
+	handleClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+	handleItemClick: (e: React.MouseEvent<HTMLLIElement>) => void;
+	isType: boolean;
+	setSelectedValue: React.Dispatch<string>;
+	handleTextChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+	reason: string;
+	onSubmitForm: (e: FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
 const AdminView = ({
-	start,
-	end,
-	status,
-	date,
-	selectedValue,
-	handleDateChange,
+	colorPill,
+	historyApproval,
+	setSelectedCuti,
+	selectedCuti,
+	approvalModal,
+	detailModal,
+	openApprovalModal,
+	openDetailModal,
+	closeApprovalModal,
+	closeDetailModal,
 	handleClick,
 	handleItemClick,
-	format,
-	colorPill,
+	selectedValue,
+	isType,
+	setSelectedValue,
+	handleTextChange,
+	reason,
+	onSubmitForm,
 }: AdminView) => {
 	return (
-		<>
+		<div className="h-screen p-4 lg:p-8">
 			<div className="flex justify-between">
 				<div className="bg-white w-full py-6 px-4 shadow-lg">
 					<h2 className="text-xl cursor-default font-bold leading-tight tracking-tight">
@@ -41,110 +93,7 @@ const AdminView = ({
 					</h2>
 				</div>
 			</div>
-			<div className="mt-4">
-				<div className="p-4 flex shadow-lg rounded-md bg-white h-[96px]">
-					<div className="flex w-lg space-x-4">
-						<div className="flex gap-1 flex-1 flex-col">
-							<p>Status</p>
-							<button
-								className="text-white bg-indigo-800 hover:bg-indigo-900 focus:ring-2 focus:outline-none focus:ring-indigo-300 font-medium rounded-md text-sm px-4 py-2 text-center inline-flex items-center"
-								type="button"
-								onClick={handleClick}
-								id="status"
-							>
-								{selectedValue || (
-									<>
-										Pilih Status
-										<svg
-											className={`transition duration-300 w-2.5 h-2.5 ms-3  ${
-												status && "rotate-180"
-											}`}
-											aria-hidden="true"
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 10 6"
-										>
-											<path
-												stroke="currentColor"
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth="2"
-												d="m1 1 4 4 4-4"
-											/>
-										</svg>
-									</>
-								)}
-							</button>
-
-							{status && (
-								<div className="z-10 shadow-sm">
-									<ul className="py-2 text-sm cursor-pointer bg-indigo-800 rounded-md text-white">
-										{statusCuti.map((data: string, id: number) => (
-											<li
-												className="block px-4 py-2 hover:bg-indigo-900"
-												value={data}
-												key={id}
-												onClick={handleItemClick}
-											>
-												{data}
-											</li>
-										))}
-									</ul>
-								</div>
-							)}
-						</div>
-						<div className="flex gap-1 flex-col flex-1">
-							<p>Tanggal</p>
-							<button
-								className="text-white bg-indigo-800 hover:bg-indigo-900 focus:ring-2 focus:outline-none focus:ring-indigo-300 font-medium rounded-md text-sm px-4 py-2 text-center inline-flex items-center"
-								type="button"
-								onClick={handleClick}
-								id="date"
-							>
-								{start && end ? (
-									`${format(start)}-${format(end)}`
-								) : (
-									<>
-										Pilih Tanggal
-										<svg
-											className={`transition duration-300 w-2.5 h-2.5 ms-3  ${
-												date && "rotate-180"
-											}`}
-											aria-hidden="true"
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 10 6"
-										>
-											<path
-												stroke="currentColor"
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth="2"
-												d="m1 1 4 4 4-4"
-											/>
-										</svg>
-									</>
-								)}
-							</button>
-							{date && (
-								<DatePicker
-									selectsRange
-									startDate={start}
-									endDate={end}
-									onChange={handleDateChange}
-									inline
-								/>
-							)}
-						</div>
-					</div>
-					<div className="flex-1 justify-end flex mt-7">
-						<button className="bg-indigo-800 cursor-pointer text-white font-medium rounded-md text-sm px-8 py-2 hover:bg-indigo-900">
-							Pakai Filter
-						</button>
-					</div>
-				</div>
-			</div>
-			<div className="bg-white h-[430px] shadow-lg p-5 rounded-md mt-4 flex justify-between flex-col">
+			<div className="bg-white h-[540px] shadow-lg p-5 rounded-md mt-4 flex justify-between flex-col">
 				<div className="flex-1">
 					<h1 className="text-xl font-bold mb-4 border-b pb-2">
 						Pengajuan Cuti Pegawai
@@ -153,36 +102,33 @@ const AdminView = ({
 						<thead className="bg-gray-200">
 							<tr>
 								<th className="px-4 py-2">Nama Pegawai</th>
-								<th className="px-4 py-2">Tanggal</th>
+								<th className="px-4 py-2">Tanggal Mulai</th>
+								<th className="px-4 py-2">Tanggal Berakhir</th>
 								<th className="px-4 py-2">Durasi</th>
 								<th className="px-4 py-2">Jenis Cuti</th>
 								<th className="px-4 py-2">Status</th>
 								<th className="px-4 py-2">Aksi</th>
 							</tr>
 						</thead>
-						<tbody>
-							{cutiEmployeesData.map(
-								(
-									{
-										name,
-										date,
-										duration,
-										type,
-										status,
-									}: {
-										name: string;
-										date: string;
-										duration: string;
-										type: string;
-										status: string;
-									},
-									id: number
-								) => (
+						<tbody className="overflow-y-scroll">
+							{historyApproval?.data.map(
+								({
+									id,
+									nama,
+									start_date,
+									end_date,
+									durasi,
+									jenis_cuti,
+									status,
+									alasan,
+									alasan_ditolak,
+								}: HistoryApproval) => (
 									<tr className="border-b border-gray-700" key={id}>
-										<td className="px-4 py-2">{name}</td>
-										<td className="px-4 py-2">{date}</td>
-										<td className="px-4 py-2">{duration}</td>
-										<td className="px-4 py-2">{type}</td>
+										<td className="px-4 py-2">{nama}</td>
+										<td className="px-4 py-2">{start_date}</td>
+										<td className="px-4 py-2">{end_date}</td>
+										<td className="px-4 py-2">{durasi} Hari</td>
+										<td className="px-4 py-2">{jenis_cuti}</td>
 										<td className="px-4 py-2">
 											<span
 												className={`font-bold px-2 py-1 rounded-md text-sm ${colorPill(
@@ -193,7 +139,27 @@ const AdminView = ({
 											</span>
 										</td>
 										<td className="px-4 py-2">
-											<button className="bg-indigo-800 text-white cursor-pointer px-4 py-1 rounded-md hover:bg-indigo-900">
+											<button
+												className="bg-indigo-800 text-white cursor-pointer px-4 py-1 rounded-md hover:bg-indigo-900"
+												onClick={() => {
+													setSelectedCuti({
+														id,
+														nama,
+														start: new Date(start_date),
+														end: new Date(end_date),
+														duration: durasi,
+														type: jenis_cuti,
+														status,
+														reason: alasan,
+														rejectedReason: alasan_ditolak,
+													});
+													if (status == "Menunggu") {
+														openApprovalModal();
+													} else {
+														openDetailModal();
+													}
+												}}
+											>
 												{status == "Menunggu" ? "Setujui" : "Detail"}
 											</button>
 										</td>
@@ -203,20 +169,30 @@ const AdminView = ({
 						</tbody>
 					</table>
 				</div>
-				<div className="flex justify-between items-center mt-4">
-					<p>Menampilkan 1 - 3 dari 10 data</p>
-					<div className="flex items-center">
-						<button className="bg-indigo-800 rounded-l-md cursor-pointer text-white px-4 py-2 hover:bg-indigo-900">
-							Sebelumnya
-						</button>
-						<p className="py-2 px-4 bg-gray-200">1</p>
-						<button className="bg-indigo-800 rounded-r-md text-white cursor-pointer px-4 py-2 hover:bg-indigo-900">
-							Selanjutnya
-						</button>
-					</div>
-				</div>
 			</div>
-		</>
+			<ModalDetail
+				selectedCuti={selectedCuti}
+				detailModal={detailModal}
+				colorPill={colorPill}
+				setSelectedCuti={setSelectedCuti}
+				closeDetailModal={closeDetailModal}
+			/>
+			<ModalApproval
+				selectedCuti={selectedCuti}
+				approvalModal={approvalModal}
+				colorPill={colorPill}
+				setSelectedCuti={setSelectedCuti}
+				closeApprovalModal={closeApprovalModal}
+				handleClick={handleClick}
+				handleItemClick={handleItemClick}
+				selectedValue={selectedValue}
+				isType={isType}
+				setSelectedValue={setSelectedValue}
+				handleTextChange={handleTextChange}
+				reason={reason}
+				onSubmitForm={onSubmitForm}
+			/>
+		</div>
 	);
 };
 

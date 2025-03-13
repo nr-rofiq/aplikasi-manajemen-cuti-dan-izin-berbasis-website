@@ -1,21 +1,9 @@
 export const cardDataUser = [
-	{
-		title: "Jatah Cuti Tersedia",
-		day: "7 Hari",
-	},
-	{
-		title: "Cuti Terpakai",
-		day: "5 Hari",
-	},
-	{
-		title: "Menunggu",
-		day: "3",
-	},
-	{
-		title: "Disetujui",
-		day: "5",
-	},
-];
+	{ title: "Jatah Cuti Tersedia", key: "cuti_tersedia" },
+	{ title: "Cuti Terpakai", key: "cuti_terpakai" },
+	{ title: "Menunggu", key: "menunggu" },
+	{ title: "Disetujui", key: "disetujui" },
+] as const;
 
 export const cutiHistory = [
 	{
@@ -107,6 +95,8 @@ export const cutiEmployeesData = [
 		status: "Menunggu",
 	},
 ];
+
+export const approvalData = [{ type: "Disetujui" }, { type: "Ditolak" }];
 
 // === Daftar NIP ===
 // 1. 200208152025041001

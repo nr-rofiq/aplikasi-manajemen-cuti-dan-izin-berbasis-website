@@ -4,6 +4,7 @@ import api from ".";
 const ENDPOINT = {
 	LOGIN: "/users/login",
 	CUTI: "/cuti",
+	APPROVAL: "/approval",
 };
 
 interface Login {
@@ -26,11 +27,45 @@ interface AddCuti {
 interface HistoryCuti {
 	message: string;
 	data: {
-		id: number;
-		tanggal: string;
-		jenis_cuti: string;
-		durasi: number;
-		alasan: string;
+		saldo: {
+			cuti_terpakai: number;
+			cuti_tersedia: number;
+			disetujui: number;
+			menunggu: number;
+		};
+		histori: [
+			{
+				id: number;
+				tanggal: string;
+				jenis_cuti: string;
+				durasi: number;
+				alasan: string;
+				status: string;
+				alasan_ditolak: string;
+			},
+		];
+	};
+}
+interface PengajuanCuti {
+	message: string;
+	data: [
+		{
+			id: number;
+			nama: string;
+			start_date: string;
+			end_date: string;
+			durasi: number;
+			jenis_cuti: string;
+			status: string;
+			alasan: string;
+			alasan_ditolak: string;
+		},
+	];
+}
+
+interface ApprovalCuti {
+	message: string;
+	data: {
 		status: string;
 	};
 }
@@ -109,7 +144,7 @@ const historyCutiService = async (): Promise<HistoryCuti> => {
 		} = await api.get(ENDPOINT.CUTI, {
 			headers: {
 				Authorization: token,
-				Accept: "application/json",
+				"ngrok-skip-browser-warning": true,
 			},
 		});
 		return historyData.data;
@@ -124,4 +159,83 @@ const historyCutiService = async (): Promise<HistoryCuti> => {
 	}
 };
 
-export { loginService, addCutiService, historyCutiService };
+const historyApprovalService = async (): Promise<PengajuanCuti> => {
+	try {
+		const authData = localStorage.getItem("tanstack.auth");
+		let token = "";
+
+		if (authData) {
+			const parsedAuth = JSON.parse(authData);
+			token = parsedAuth.token;
+		}
+
+		const historyData: {
+			data: PengajuanCuti;
+		} = await api.get(ENDPOINT.APPROVAL, {
+			headers: {
+				Authorization: token,
+				"ngrok-skip-browser-warning": true,
+			},
+		});
+		return historyData.data;
+	} catch (err: unknown) {
+		if (err instanceof AxiosError) {
+			console.error("Axios Error:", err.response?.data || err.message);
+			throw new Error(
+				err.response?.data?.message || "Histori pengajuan tidak ada!"
+			);
+		} else {
+			console.error("Unexpected Error:", err);
+			throw new Error("An unexpected error occurred");
+		}
+	}
+};
+
+const approvalService = async (
+	id: number,
+	status: string,
+	reason: string
+): Promise<ApprovalCuti> => {
+	try {
+		const authData = localStorage.getItem("tanstack.auth");
+		let token = "";
+
+		if (authData) {
+			const parsedAuth = JSON.parse(authData);
+			token = parsedAuth.token;
+		}
+
+		const approveCuti: {
+			data: ApprovalCuti;
+		} = await api.put(
+			`${ENDPOINT.APPROVAL}/${id}`,
+			{
+				status,
+				alasan_ditolak: reason,
+			},
+			{
+				headers: {
+					Authorization: token,
+				},
+			}
+		);
+
+		return approveCuti.data;
+	} catch (err: unknown) {
+		if (err instanceof AxiosError) {
+			console.error("Axios Error:", err.response?.data || err.message);
+			throw new Error(err.response?.data?.message || "Approval gagal!");
+		} else {
+			console.error("Unexpected Error:", err);
+			throw new Error("An unexpected error occurred");
+		}
+	}
+};
+
+export {
+	loginService,
+	addCutiService,
+	historyCutiService,
+	historyApprovalService,
+	approvalService,
+};

@@ -1,7 +1,8 @@
 import { FormEvent, useState } from "react";
 import UserView from "./View";
-import { useMutation } from "@tanstack/react-query";
-import { addCutiService } from "../../../api/service";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { addCutiService, historyCutiService } from "../../../api/service";
+import { useAuth } from "../../../auth";
 
 interface DateRange {
 	start: Date | null;
@@ -19,6 +20,8 @@ const Login = () => {
 		type: string;
 		duration: number;
 		status: string;
+		alasan: string;
+		alasanDitolak: string;
 	} | null>(null);
 	const [chooseDate, setChooseDate] = useState<DateRange>({
 		start: null,
@@ -32,6 +35,8 @@ const Login = () => {
 	const [selectedValue, setSelectedValue] = useState<string | null>(null);
 	const [isType, setIsType] = useState<boolean>(false);
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+	const { data } = useAuth();
 
 	const addCutiMutation = useMutation({
 		mutationFn: ({
@@ -53,6 +58,15 @@ const Login = () => {
 		},
 	});
 
+	const {
+		data: historyData,
+		isPending,
+		refetch,
+	} = useQuery({
+		queryKey: ["history"],
+		queryFn: historyCutiService,
+	});
+
 	const onFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setIsSubmitting(true);
@@ -65,6 +79,7 @@ const Login = () => {
 			};
 
 			await addCutiMutation.mutateAsync(addCutiData);
+			refetch();
 		} catch (error) {
 			console.error("Error Pengajuan Cuti: ", error);
 		} finally {
@@ -157,6 +172,9 @@ const Login = () => {
 				handleTextChange={handleTextChange}
 				reason={reason}
 				onFormSubmit={onFormSubmit}
+				historyData={historyData}
+				isPending={isPending}
+				name={data?.nama}
 			/>
 		</div>
 	);
