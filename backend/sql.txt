@@ -1,3 +1,5 @@
+CREATE DATABASE project_it_bpkp;
+
 CREATE TABLE user
 (
 	nip CHAR(18) NOT NULL PRIMARY KEY,
