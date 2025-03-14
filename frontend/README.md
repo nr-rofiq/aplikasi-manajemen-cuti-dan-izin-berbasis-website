@@ -1,54 +1,82 @@
-# React + TypeScript + Vite
+# Frontend Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📌 Overview
 
-Currently, two official plugins are available:
+Ini adalah proyek frontend yang menggunakan **React 19**, **Tailwind CSS 4**, dan **Vite**. Proyek ini juga menggunakan **TanStack Router & React Query** untuk manajemen routing dan fetching data.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Teknologi yang Digunakan
 
-## Expanding the ESLint configuration
+- [React 19](https://react.dev/)
+- [Vite](https://vitejs.dev/)
+- [Tailwind CSS 4](https://tailwindcss.com/)
+- [TanStack React Query](https://tanstack.com/query)
+- [TanStack Router](https://tanstack.com/router)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Zod](https://zod.dev/)
+- [ESLint](https://eslint.org/)
+- [Axios](https://axios-http.com/)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📂 Struktur Proyek
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```
+frontend/
+│── src/              # Direktori kode utama
+│── public/           # Folder untuk aset publik
+│── .eslintrc.js      # Konfigurasi ESLint
+│── tsconfig.json     # Konfigurasi TypeScript
+│── tailwind.config.js # Konfigurasi Tailwind CSS
+│── vite.config.ts    # Konfigurasi Vite
+│── package.json      # Daftar dependensi dan script
+│── README.md         # Dokumentasi proyek ini
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🔧 Instalasi & Menjalankan Proyek
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 1️⃣ Clone Repository
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```sh
+git clone https://github.com/nr-rofiq/aplikasi-manajemen-cuti-dan-izin-berbasis-website.git
+cd frontend
 ```
+
+### 2️⃣ Instal Dependensi
+
+```sh
+npm install
+```
+
+### 3️⃣ Jalankan Mode Pengembangan
+
+```sh
+npm run dev
+```
+
+Akses proyek di `http://localhost:5173/`.
+
+### 4️⃣ Build untuk Produksi
+
+```sh
+npm run build
+```
+
+### 5️⃣ Preview Build
+
+```sh
+npm run preview
+```
+
+## 📏 Linting & Formatting
+
+Untuk memastikan kode tetap bersih dan sesuai standar:
+
+```sh
+npm run lint
+```
+
+## 📜 Lisensi
+
+Proyek ini dilisensikan di bawah [MIT License](LICENSE).
+
+---
+
+🚀 **Happy Coding!**
