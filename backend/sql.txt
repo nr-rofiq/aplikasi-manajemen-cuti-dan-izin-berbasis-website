@@ -1,0 +1,47 @@
+CREATE TABLE user
+(
+	nip CHAR(18) NOT NULL PRIMARY KEY,
+	nama VARCHAR(100) NOT NULL,
+	password CHAR(60) NOT NULL,
+	jabatan VARCHAR(50) NOT NULL,
+	tmt DATE NOT NULL,
+    is_ppk BOOLEAN NOT NULL
+);
+
+INSERT INTO user(nip, nama, password, jabatan, tmt, is_ppk)
+VALUES ('111111111111111111', 'Nur Rofiq', 'bpkp2025', 'Auditor Terampil', '2024-04-01', FALSE),
+		('222222222222222222', 'Aqsal Ramadhan Arrijal', 'bpkp2025', 'Auditor Terampil', '2023-07-01', FALSE),
+		('333333333333333333', 'Eko Khafid Firmansyah', 'bpkp2025', 'Auditor Terampil', '2021-09-01', FALSE),
+		('444444444444444444', 'Ibnu Khotamul Aulad', 'bpkp2025', 'Auditor Terampil', '2019-03-01', FALSE),
+		('555555555555555555', 'Ardi Perdana Sukma', 'bpkp2025', 'Auditor Ahli Pertama', '2017-10-01', FALSE),
+		('666666666666666666', 'Raden Mas Aris Santosa', 'bpkp2025', 'Kepala Biro SDM', '1994-05-01', TRUE);
+
+CREATE TABLE jenis_cuti
+(
+	id CHAR(3) NOT NULL PRIMARY KEY,
+	nama VARCHAR(100) NOT NULL,
+	max_days SMALLINT UNSIGNED
+);
+
+INSERT INTO jenis_cuti(id, nama, max_days)
+VALUES('C01', 'Cuti Tahunan', 12),
+      ('C02', 'Cuti Besar', 90),
+      ('C03', 'Cuti Sakit', NULL),
+      ('C04', 'Cuti Melahirkan', 90),
+      ('C05', 'Cuti Karena Alasan Penting', 30);
+
+CREATE TABLE cuti
+(
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	nip_user CHAR(18) NOT NULL,
+	id_jenis_cuti CHAR(3) NOT NULL,
+	start_date DATE NOT NULL,
+	end_date DATE NOT NULL,
+	alasan VARCHAR(255) DEFAULT '',
+    alasan_ditolak VARCHAR(255) DEFAULT '',
+	status VARCHAR(20) NOT NULL DEFAULT "Menunggu",
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    approved_by VARCHAR(100),
+	CONSTRAINT fk_cuti_users FOREIGN KEY (nip_user) REFERENCES user(nip),
+	CONSTRAINT fk_cuti_jenis_cuti FOREIGN KEY (id_jenis_cuti) REFERENCES jenis_cuti(id)
+);

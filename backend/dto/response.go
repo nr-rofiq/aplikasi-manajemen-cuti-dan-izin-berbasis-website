@@ -11,7 +11,3 @@ func CreateAPIResponse(message string, data any) APIResponse {
 		Data:    data,
 	}
 }
-
-type ServiceResponse struct {
-	Data any `json:"data"`
-}
