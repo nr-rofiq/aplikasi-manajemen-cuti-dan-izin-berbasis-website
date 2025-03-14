@@ -31,7 +31,7 @@ func (c *cutiService) Create(ctx context.Context, req dto.CutiRequest) error {
 		IDJenisCuti: req.IDJenisCuti,
 		StartDate:   req.StartDate,
 		EndDate:     req.EndDate,
-		Alasan:      req.Alasan,
+		AlasanCuti:      req.Alasan,
 	}
 
 	return c.cutiRepository.Save(ctx, &cuti)
@@ -100,7 +100,7 @@ func (c *cutiService) Show(ctx context.Context, nip string) (map[string]any, err
 			"tanggal":        tanggal,
 			"jenis_cuti":     jenisCuti,
 			"durasi":         totalWeekdays,
-			"alasan_cuti":    v.Alasan,
+			"alasan_cuti":    v.AlasanCuti,
 			"alasan_ditolak": v.AlasanDitolak,
 			"status":         v.Status,
 		})

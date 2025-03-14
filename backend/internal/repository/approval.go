@@ -18,7 +18,7 @@ func NewApproval(con *sql.DB) domain.ApprovalRepository {
 
 // FindAll implements domain.ApprovalRepository.
 func (ar *approvalRepository) FindAll(ctx context.Context) ([]domain.Cuti, error) {
-	script := "SELECT * FROM cuti"
+	script := "SELECT * FROM cuti LIMIT 5"
 	rows, err := ar.db.QueryContext(ctx, script)
 	if err != nil {
 		// log.Fatal("Query FindAll gagal: ", err.Error())
@@ -30,7 +30,7 @@ func (ar *approvalRepository) FindAll(ctx context.Context) ([]domain.Cuti, error
 
 	for rows.Next() {
 		cuti := domain.Cuti{}
-		err := rows.Scan(&cuti.ID, &cuti.NipUser, &cuti.IDJenisCuti, &cuti.StartDate, &cuti.EndDate, &cuti.Alasan, &cuti.AlasanDitolak, &cuti.Status, &cuti.CreatedAt, &cuti.ApprovedBy)
+		err := rows.Scan(&cuti.ID, &cuti.NipUser, &cuti.IDJenisCuti, &cuti.StartDate, &cuti.EndDate, &cuti.AlasanCuti, &cuti.AlasanDitolak, &cuti.Status, &cuti.CreatedAt, &cuti.ApprovedBy)
 		if err != nil {
 			panic(err)
 		}
@@ -82,7 +82,7 @@ func (ar *approvalRepository) FindById(ctx context.Context, id int) (domain.Cuti
 			&cuti.IDJenisCuti,
 			&cuti.StartDate,
 			&cuti.EndDate,
-			&cuti.Alasan,
+			&cuti.AlasanCuti,
 			&cuti.AlasanDitolak,
 			&cuti.Status,
 			&cuti.CreatedAt,

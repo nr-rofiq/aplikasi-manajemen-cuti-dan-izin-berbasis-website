@@ -11,7 +11,7 @@ type Cuti struct {
 	IDJenisCuti   string `db:"id_jenis_cuti"`
 	StartDate     string `db:"start_date"`
 	EndDate       string `db:"end_date"`
-	Alasan        string `db:"alasan"`
+	AlasanCuti    string `db:"alasan_cuti"`
 	AlasanDitolak string `db:"alasan_ditolak"`
 	Status        string `db:"status"`
 	CreatedAt     string `db:"created_at"`

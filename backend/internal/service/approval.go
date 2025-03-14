@@ -70,7 +70,7 @@ func (a *approvalService) Show(ctx context.Context) ([]map[string]any, error) {
 			"end_date":       subEndDate,
 			"durasi":         totalWeekdays,
 			"jenis_cuti":     jenisCuti,
-			"alasan_cuti":    v.Alasan,
+			"alasan_cuti":    v.AlasanCuti,
 			"alasan_ditolak": v.AlasanDitolak,
 			"status":         v.Status,
 		})
