@@ -27,16 +27,26 @@ cd backend
 go mod tidy
 ```
 
-2. Konfigurasi Database, pastikan MySQL sudah terinstall dan jalankan MySQL server. Sesuaikan file konfigurasi .env, lalu buat database & table seperti di file sql.txt
+2. Konfigurasi Database, pastikan MySQL sudah terinstall dan jalankan MySQL server. Lalu buat database seperti berikut:
+```
+mysql -u root -p
+CREATE DATABASE project_it_bpkp;
+exit;
+```
 
-3. Jalankan Server
+3. Import file backup.sql ke MySQL
+```
+mysql -u root -p project_it_bpkp < backup.sql
+```
+
+4. Jalankan Server
 ```
 go run main.go
 ```
 Server akan berjalan di http://localhost:3000
 
 # Setup Frontend
-1. 
+Untuk Setup Frontend, silahkan lihat file README.md di folder frontend
 
 
 # Dokumentasi API
