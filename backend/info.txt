@@ -12,8 +12,3 @@
 6. Bcrypt = go get golang.org/x/crypto/bcrypt (Hashing Password)
 
 7. CORS = go get github.com/gofiber/fiber/v2/middleware/cors (CORS)
-
-JWT setiap 10 menit, harus generate ulang token
-
-
-Hashing password pakai Bcrypt
