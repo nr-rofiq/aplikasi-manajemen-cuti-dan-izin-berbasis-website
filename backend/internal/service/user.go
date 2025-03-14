@@ -3,99 +3,66 @@ package service
 import (
 	"backend/domain"
 	"backend/dto"
+	"backend/internal/config"
+	"backend/internal/util"
 	"context"
 	"errors"
+	"time"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 // Implementasi interface UserService "domain >> user.go"
 type userService struct {
+	conf           *config.Config
 	userRepository domain.UserRepository
 }
 
-func NewUser(userRepository domain.UserRepository) domain.UserService {
+func NewUser(cnf *config.Config, userRepository domain.UserRepository) domain.UserService {
 	return &userService{
+		conf:           cnf,
 		userRepository: userRepository,
 	}
 }
 
-// Index implements domain.UserService.
-func (u *userService) Index(ctx context.Context) ([]dto.UserData, error) {
-	users, err := u.userRepository.FindAll(ctx)
+// Login implements domain.UserService.
+func (u *userService) Login(ctx context.Context, req dto.LoginRequest) (map[string]any, error) {
+	user, err := u.userRepository.FindById(ctx, req.NIP)
 	if err != nil {
 		return nil, err
 	}
 
-	var userData []dto.UserData
-	for _, v := range users {
-		userData = append(userData, dto.UserData{
-			ID:      v.ID,
-			Nama:    v.Nama,
-			Jabatan: v.Jabatan,
-		})
+	if user.Nip == "" {
+		return nil, errors.New("username atau password salah")
 	}
 
-	return userData, nil
-}
-
-// Create implements domain.UserService.
-func (u *userService) Create(ctx context.Context, req dto.CreateUserRequest) error {
-	user := domain.User{
-		ID:       req.ID,
-		Nama:     req.Nama,
-		Password: req.Password,
-		Jabatan:  req.Jabatan,
-		TMT:      req.TMT,
-	}
-
-	return u.userRepository.Save(ctx, &user)
-}
-
-// Update implements domain.UserService.
-func (u *userService) Update(ctx context.Context, req dto.UpdateUserRequest) error {
-	persisted, err := u.userRepository.FindById(ctx, req.ID)
+	err = util.CheckPassword(user.Password, req.Password)
 	if err != nil {
-		return err
+		return nil, errors.New("username atau password salah")
 	}
 
-	if persisted.ID == "" {
-		return errors.New("data user tidak ditemukan")
+	// Generate token, bila suskses login
+	claim := jwt.MapClaims{
+		"nip": user.Nip,
+		"exp": time.Now().Add(time.Duration(u.conf.Jwt.Exp) * time.Hour).Unix(), // Epoch Time
 	}
 
-	persisted.Nama = req.Nama
-	persisted.Password = req.Password
-	persisted.Jabatan = req.Jabatan
-
-	return u.userRepository.Update(ctx, &persisted)
-}
-
-// Delete implements domain.UserService.
-func (u *userService) Delete(ctx context.Context, id string) error {
-	exist, err := u.userRepository.FindById(ctx, id)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
+	tokenStr, err := token.SignedString([]byte(u.conf.Jwt.Key))
 	if err != nil {
-		return err
+		return nil, errors.New("authentication gagal")
 	}
 
-	if exist.ID == "" {
-		return errors.New("data user tidak ditemukan")
-	}
-
-	return u.userRepository.Delete(ctx, id)
-}
-
-// Show implements domain.UserService.
-func (u *userService) Show(ctx context.Context, id string) (dto.UserData, error) {
-	persisted, err := u.userRepository.FindById(ctx, id)
-	if err != nil {
-		return dto.UserData{}, err
-	}
-
-	if persisted.ID == "" {
-		return dto.UserData{}, errors.New("data user tidak ditemukan")
-	}
-
-	return dto.UserData{
-		ID: persisted.ID,
-		Nama: persisted.Nama,
-		Jabatan: persisted.Jabatan,
+	return fiber.Map{
+		"token":   tokenStr,
+		"nama":    user.Nama,
+		"jabatan": user.Jabatan,
+		"is_ppk":  user.IsPPK,
 	}, nil
+
+	// return dto.APIResponse{
+	// 	Token: tokenStr,
+	// }, nil
+
 }

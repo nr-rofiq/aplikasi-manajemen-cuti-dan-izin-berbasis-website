@@ -11,47 +11,61 @@
     },
     "servers": [
         {
-            "url": "http://localhost:3000/api"
+            "url": "http://localhost:3000"
         }
     ],
     "paths": {
-        "/login": {
+        "/users/login": {
             "post": {
-                "security": [
-                    {
-                        "CategoryAuth": []
-                    }
-                ],
-                "tags": [
-                    "Category API"
-                ],
                 "description": "Login by nip & password",
-                "summary": "Login by nip & password",
+                "tags": [
+                    "Users"
+                ],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/CreateOrUpdateCategory"
+                                "type": "object",
+                                "properties": {
+                                    "nip": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                }
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Success Create Category",
+                        "description": "Login sukses",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "code": {
-                                            "type": "number"
-                                        },
-                                        "status": {
+                                        "message": {
                                             "type": "string"
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/Category"
+                                            "type": "object",
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string"
+                                                },
+                                                "nama": {
+                                                    "type": "string"
+                                                },
+                                                "jabatan": {
+                                                    "type": "string"
+                                                },
+                                                "is_ppk": {
+                                                    "type": "boolean"
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -60,26 +74,378 @@
                     }
                 }
             }
-        }
-    },
-    "components": {
-        "schemas": {
-            "CreateOrUpdateCategory": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
+        },
+        "/cuti": {
+            "get": {
+                "description": "Endpoint untuk mendapatkan data cuti pengguna",
+                "tags": [
+                    "Cuti"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "description": "Tambahkan token jwt di header Authorization",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mendapatkan data cuti pengguna",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "saldo": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "cuti_terpakai": {
+                                                            "type": "integer"
+                                                        },
+                                                        "cuti_tersedia": {
+                                                            "type": "integer"
+                                                        },
+                                                        "disetujui": {
+                                                            "type": "integer"
+                                                        },
+                                                        "menunggu": {
+                                                            "type": "integer"
+                                                        }
+                                                    }
+                                                },
+                                                "histori": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "tanggal": {
+                                                                "type": "string"
+                                                            },
+                                                            "jenis_cuti": {
+                                                                "type": "string"
+                                                            },
+                                                            "durasi": {
+                                                                "type": "integer"
+                                                            },
+                                                            "alasan_cuti": {
+                                                                "type": "string"
+                                                            },
+                                                            "alasan_ditolak": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "success",
+                                    "data": {
+                                        "saldo": {
+                                            "cuti_terpakai": 3,
+                                            "cuti_tersedia": 9,
+                                            "disetujui": 0,
+                                            "menunggu": 2
+                                        },
+                                        "histori": [
+                                            {
+                                                "id": 1,
+                                                "tanggal": "2025-03-11",
+                                                "jenis_cuti": "Cuti Tahunan",
+                                                "durasi": 3,
+                                                "alasan_cuti": "Liburan bareng keluarga",
+                                                "alasan_ditolak": "Sudah banyak yang cuti",
+                                                "status": "Ditolak"
+                                            },
+                                            {
+                                                "id": 3,
+                                                "tanggal": "2025-04-11",
+                                                "jenis_cuti": "Cuti Sakit",
+                                                "durasi": 17,
+                                                "alasan_cuti": "Sakit demam berdarah",
+                                                "alasan_ditolak": "",
+                                                "status": "Disetujui"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             },
-            "Category": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "number"
+            "post": {
+                "description": "Endpoint untuk membuat pengajuan cuti baru",
+                "tags": [
+                    "Cuti"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "description": "Tambahkan token jwt di header Authorization",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id_jenis_cuti": {
+                                        "type": "string"
+                                    },
+                                    "start_date": {
+                                        "type": "string"
+                                    },
+                                    "end_date": {
+                                        "type": "string"
+                                    },
+                                    "alasan": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "id_jenis_cuti": "C01",
+                                "start_date": "2025-04-10",
+                                "end_date": "2025-04-15",
+                                "alasan": "Liburan bareng keluarga"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Berhasil menambahkan data pengajuan cuti",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "success",
+                                    "data": {
+                                        "status": "created"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/approval": {
+            "get": {
+                "description": "Endpoint untuk mendapatkan semua data pengajuan cuti",
+                "tags": [
+                    "Approval"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "description": "Tambahkan token jwt di header Authorization",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mendapatkan semua data pengajuan cuti",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "nama": {
+                                                        "type": "string"
+                                                    },
+                                                    "start_date": {
+                                                        "type": "string"
+                                                    },
+                                                    "end_date": {
+                                                        "type": "string"
+                                                    },
+                                                    "durasi": {
+                                                        "type": "integer"
+                                                    },
+                                                    "jenis_cuti": {
+                                                        "type": "string"
+                                                    },
+                                                    "alasan_cuti": {
+                                                        "type": "string"
+                                                    },
+                                                    "alasan_ditolak": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "success",
+                                    "data": [
+                                        {
+                                            "id": 1,
+                                            "nama": "Ardi Perdana Sukma",
+                                            "start_date": "2025-04-10",
+                                            "end_date": "2025-05-18",
+                                            "durasi": 27,
+                                            "jenis_cuti": "Cuti Karena Alasan Penting",
+                                            "alasan_cuti": "Pergi Umroh",
+                                            "alasan_ditolak": "",
+                                            "status": "Disetujui"
+                                        },
+                                        {
+                                            "id": 2,
+                                            "nama": "Aqsal Ramadhan Arrijal",
+                                            "start_date": "2025-04-10",
+                                            "end_date": "2025-04-14",
+                                            "durasi": 3,
+                                            "jenis_cuti": "Cuti Tahunan",
+                                            "alasan_cuti": "Liburan bareng keluarga",
+                                            "alasan_ditolak": "",
+                                            "status": "Menunggu"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/approval/{approvalId}": {
+            "put": {
+                "description": "Update approval cuti",
+                "tags": [
+                    "Approval"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "description": "Tambahkan token jwt di header Authorization",
+                        "schema": {
+                            "type": "string"
+                        }
                     },
-                    "name": {
-                        "type": "string"
+                    {
+                        "in": "path",
+                        "name": "approvalId",
+                        "required": true,
+                        "description": "Tambahkan approval ID di path parameter",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "alasan_ditolak": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "status": "Disetujui",
+                                "alasan_ditolak": ""
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil update approval cuti",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "success",
+                                    "data": {
+                                        "status": "updated"
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

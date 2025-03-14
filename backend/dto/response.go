@@ -1,32 +1,17 @@
 package dto
 
-// HTTP Response
-type Response[T any] struct {
-	Code    string `json:"code"`
+type APIResponse struct {
 	Message string `json:"message"`
-	Data    T      `json:"data"`
+	Data    any    `json:"data"`
 }
 
-func CreateResponseError(message string) Response[string] {
-	return Response[string]{
-		Code:    "99",
-		Message: message,
-		Data:    "",
-	}
-}
-
-func CreateResponseErrorData(message string, data map[string]string) Response[map[string]string] {
-	return Response[map[string]string]{
-		Code:    "99",
+func CreateAPIResponse(message string, data any) APIResponse {
+	return APIResponse{
 		Message: message,
 		Data:    data,
 	}
 }
 
-func CreateResponseSuccess[T any](data T) Response[T] {
-	return Response[T]{
-		Code:    "00",
-		Message: "success",
-		Data:    data,
-	}
+type ServiceResponse struct {
+	Data any `json:"data"`
 }

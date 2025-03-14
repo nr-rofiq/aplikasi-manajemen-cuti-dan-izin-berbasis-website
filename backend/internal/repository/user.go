@@ -1,13 +1,12 @@
 package repository
 
 // Query SQL
+// CRUD
 
 import (
 	"backend/domain"
-	"backend/internal/util"
 	"context"
 	"database/sql"
-	"log"
 )
 
 // Implementasi interface dari "domain >> user.go"
@@ -22,35 +21,9 @@ func NewUser(con *sql.DB) domain.UserRepository {
 	}
 }
 
-
-// FindAll implements domain.UserRepository.
-func (ur *userRepository) FindAll(ctx context.Context) ([]domain.User, error) {
-	script := "SELECT * FROM users"
-	rows, err := ur.db.QueryContext(ctx, script)
-	if err != nil {
-		// log.Fatal("Query FindAll gagal: ", err.Error())
-		return nil, err
-	}
-	defer rows.Close()
-
-	var users []domain.User
-
-	for rows.Next() {
-		user := domain.User{}
-		err = rows.Scan(&user.ID, &user.Nama, &user.Password, &user.Jabatan, &user.TMT)
-		if err != nil {
-			panic(err)
-		}
-
-		users = append(users, user)
-	}
-
-	return users, nil
-}
-
 // FindById implements domain.UserRepository.
 func (ur *userRepository) FindById(ctx context.Context, id string) (domain.User, error) {
-	script := "SELECT * FROM users WHERE id = ?"
+	script := "SELECT * FROM user WHERE nip = ?"
 	rows, err := ur.db.QueryContext(ctx, script, id)
 	if err != nil {
 		panic(err)
@@ -59,7 +32,7 @@ func (ur *userRepository) FindById(ctx context.Context, id string) (domain.User,
 
 	user := domain.User{}
 	if rows.Next() {
-		err := rows.Scan(&user.ID, &user.Nama, &user.Password, &user.Jabatan, &user.TMT)
+		err := rows.Scan(&user.Nip, &user.Nama, &user.Password, &user.Jabatan, &user.TMT, &user.IsPPK)
 		if err != nil {
 			panic(err)
 		}
@@ -71,42 +44,4 @@ func (ur *userRepository) FindById(ctx context.Context, id string) (domain.User,
 	// }
 
 	return user, nil
-}
-
-// Save implements domain.UserRepository.
-func (ur *userRepository) Save(ctx context.Context, u *domain.User) error {
-	hashedPassword, err := util.HashPassword(u.Password)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	script := "INSERT INTO users(id, nama, password, jabatan, tmt) VALUES (?, ?, ?, ?, ?)"
-	_, err = ur.db.ExecContext(ctx, script, u.ID, u.Nama, hashedPassword, u.Jabatan, u.TMT)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Update implements domain.UserRepository.
-func (ur *userRepository) Update(ctx context.Context, u *domain.User) error {
-	script := "UPDATE users SET nama = ?, password = ?, jabatan = ? WHERE id = ?"
-	_, err := ur.db.ExecContext(ctx, script, u.Nama, u.Password, u.Jabatan, u.ID)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Delete implements domain.UserRepository.
-func (ur *userRepository) Delete(ctx context.Context, id string) error {
-	script := "DELETE FROM users WHERE id = ?"
-	_, err := ur.db.ExecContext(ctx, script, id)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

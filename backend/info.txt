@@ -11,6 +11,10 @@
 
 6. Bcrypt = go get golang.org/x/crypto/bcrypt (Hashing Password)
 
+7. CORS = go get github.com/gofiber/fiber/v2/middleware/cors (CORS)
+
+8. Testify = go get github.com/stretchr/testify (Unit Test)
+
 JWT setiap 10 menit, harus generate ulang token
 
 
