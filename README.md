@@ -38,6 +38,11 @@ go run main.go
 Server akan berjalan di http://localhost:3000
 
 # Setup Frontend
+1. 
+
+
+# Dokumentasi API
+Lihat file apispec.json di folder backend
 
 
 
