@@ -1,6 +1,6 @@
 # Aplikasi Manajemen Cuti dan Izin Berbasis Website
 
-Project IT CPNS BPKP T.A. 2024
+Project IT CPNS BPKP T.A. 2025
 
 Daftar Anggota:
 1. Nur Rofiq                ->  Backend Developer
@@ -21,15 +21,13 @@ cd aplikasi-manajemen-cuti-dan-izin-berbasis-website
 ```
 
 # Setup Backend
-1. Install Dependency
-Pastikan PC/Laptop sudah terinstal Go (minimal versi 1.18). Kemudian jalankan:
+1. Install Dependency, pastikan PC/Laptop sudah terinstal Go (minimal versi 1.18). Kemudian jalankan:
 ```
 cd backend
 go mod tidy
 ```
 
-2. Konfigurasi Database
-Pastikan MySQL sudah terinstall dan jalankan MySQL server. Sesuaikan file konfigurasi .env & buat table seperti di file sql.txt
+2. Konfigurasi Database, pastikan MySQL sudah terinstall dan jalankan MySQL server. Sesuaikan file konfigurasi .env, lalu buat database & table seperti di file sql.txt
 
 3. Jalankan Server
 ```
