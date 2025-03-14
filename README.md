@@ -20,22 +20,24 @@ git clone https://github.com/nr-rofiq/aplikasi-manajemen-cuti-dan-izin-berbasis-
 cd aplikasi-manajemen-cuti-dan-izin-berbasis-website
 ```
 
-2. Setup Backend
-a. Install Dependency
+# Setup Backend
+1. Install Dependency
 Pastikan PC/Laptop sudah terinstal Go (minimal versi 1.18). Kemudian jalankan:
 ```
 cd backend
 go mod tidy
 ```
 
-b. Konfigurasi Database
-Pastikan MySQL sudah terinstall dan jalankan MySQL server. Sesuaikan file konfigurasi .env & buat table seperti di file sql.txt:
+2. Konfigurasi Database
+Pastikan MySQL sudah terinstall dan jalankan MySQL server. Sesuaikan file konfigurasi .env & buat table seperti di file sql.txt
 
-c. Jalankan Server
+3. Jalankan Server
 ```
 go run main.go
 ```
+Server akan berjalan di http://localhost:3000
 
+# Setup Frontend
 
 
 
