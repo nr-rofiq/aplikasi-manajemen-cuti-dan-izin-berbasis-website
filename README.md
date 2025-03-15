@@ -12,8 +12,8 @@ Daftar Anggota:
 5. **Ardi Perdana Sukma**       ->  Business Analyst
 
 Mentor:
-1. Ardhani Reswari Yudistari
-2. Dhevatriya Nurul Khasanah
+1. **Ardhani Reswari Yudistari**
+2. **Dhevatriya Nurul Khasanah**
 
 
 ## 🚀 Fitur Utama
@@ -79,11 +79,24 @@ go run main.go
 Server akan berjalan di `http://localhost:3000`
 
 ### 3️⃣ Menjalankan Frontend
-Untuk Setup Frontend, silakan lihat file README.md di folder frontend
+Untuk Setup Frontend, silakan lihat file README.md di folder `frontend/`
 
+## 📋 Data Dummy
+```
++--------------------+------------------------+----------+------------+
+| nip                | nama                   | password | role       |
++--------------------+------------------------+----------+------------+
+| 111111111111111111 | Nur Rofiq              | bpkp2025 | pegawai    |
+| 222222222222222222 | Aqsal Ramadhan Arrijal | bpkp2025 | pegawai    |
+| 333333333333333333 | Eko Khafid Firmansya   | bpkp2025 | pegawai    |
+| 444444444444444444 | Ibnu Khotamul Aulad    | bpkp2025 | pegawai    |
+| 555555555555555555 | Ardi Perdana Sukma     | bpkp2025 | pegawai    |
+| 666666666666666666 | Raden Mas Aris Santosa | bpkp2025 | atasan/PPK |
++--------------------+------------------------+----------+------------+
+```
 
-## 🔥 Dokumentasi API
-Silakan lihat dokumentasi API di folder backend/openapi/
+## 🔥 Dokumentasi API & ERD
+Silakan lihat dokumentasi API dan ERD di folder `backend/docs/`
 
 
 
