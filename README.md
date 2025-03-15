@@ -1,6 +1,8 @@
-# Aplikasi Manajemen Cuti dan Izin Berbasis Website
+# 🏖️ Aplikasi Manajemen Cuti dan Izin Berbasis Website
 
-Project IT CPNS BPKP T.A. 2025
+Aplikasi yang mempermudah pegawai dan atasan untuk pengajuan maupun persetujuan cuti
+
+## 🧑‍💻 Tim Invacatio
 
 Daftar Anggota:
 1. Nur Rofiq                ->  Backend Developer
@@ -12,6 +14,14 @@ Daftar Anggota:
 Mentor:
 1. Ardhani Reswari Yudistari
 2. Dhevatriya Nurul Khasanah
+
+
+## 🚀 Fitur Utama
+
+✅ **Autentikasi & Otorisasi** – Login dan logout menggunakan JWT.  
+✅ **Manajemen Cuti** – Pengajuan, persetujuan, dan riwayat cuti.  
+✅ **Role-Based Access** – Hak akses berbeda untuk karyawan dan manajer.  
+✅ **Dashboard Interaktif** – Ringkasan data cuti dengan UI menarik.  
 
 # Instalasi Project
 1. Clone Repository
@@ -39,18 +49,34 @@ exit;
 mysql -u root -p project_it_bpkp < backup.sql
 ```
 
-4. Jalankan Server
+4. Sesuaikan file konfigurasi .env:
+```
+SERVER_HOST=localhost
+SERVER_PORT=3000
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=project_it_bpkp
+DB_USER=root
+DB_PASS=root
+
+JWT_KEY=secret
+JWT_EXP=10
+
+```
+
+5. Jalankan Server
 ```
 go run main.go
 ```
 Server akan berjalan di http://localhost:3000
 
 # Setup Frontend
-Untuk Setup Frontend, silahkan lihat file README.md di folder frontend
+Untuk Setup Frontend, silakan lihat file README.md di folder frontend
 
 
 # Dokumentasi API
-Lihat file apispec.json di folder backend
+Silakan lihat dokumentasi API di folder backend/openapi/
 
 
 
