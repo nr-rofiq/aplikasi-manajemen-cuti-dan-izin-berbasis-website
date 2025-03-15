@@ -32,10 +32,9 @@ frontend/
 
 ## 🔧 Instalasi & Menjalankan Proyek
 
-### 1️⃣ Clone Repository
+### 1️⃣ Masuk ke Direktori frontend
 
 ```sh
-git clone https://github.com/nr-rofiq/aplikasi-manajemen-cuti-dan-izin-berbasis-website.git
 cd frontend
 ```
 
