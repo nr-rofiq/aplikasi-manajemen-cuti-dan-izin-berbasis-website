@@ -44,7 +44,7 @@ cd frontend
 npm install
 ```
 
-### 3️⃣ Buat file `.env`
+### 3️⃣ Buat file `.env` dan isi dengan konfigurasi berikut:
 
 ```sh
 VITE_BASE_URL=http://localhost:3000
