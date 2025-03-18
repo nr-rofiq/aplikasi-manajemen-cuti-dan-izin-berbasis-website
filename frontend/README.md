@@ -44,7 +44,13 @@ cd frontend
 npm install
 ```
 
-### 3️⃣ Jalankan Mode Pengembangan
+### 3️⃣ Buat file `.env`
+
+```sh
+VITE_BASE_URL=http://localhost:3000
+```
+
+### 4️⃣ Jalankan Mode Pengembangan
 
 ```sh
 npm run dev
@@ -52,13 +58,13 @@ npm run dev
 
 Akses proyek di `http://localhost:5173/`.
 
-### 4️⃣ Build untuk Produksi
+### 5️⃣ Build untuk Produksi
 
 ```sh
 npm run build
 ```
 
-### 5️⃣ Preview Build
+### 6️⃣ Preview Build
 
 ```sh
 npm run preview
