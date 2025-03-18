@@ -44,7 +44,7 @@ cd backend
 go mod tidy
 ```
 
-2. Konfigurasi Database, pastikan [MySQL](https://www.mysql.com/) sudah terinstall dan jalankan MySQL server. Lalu buat database seperti berikut:
+2. Konfigurasi Database, pastikan [MySQL](https://www.mysql.com/) (versi 8) sudah terinstall dan jalankan MySQL server. Lalu buat database seperti berikut:
 ```sh
 mysql -u root -p
 CREATE DATABASE project_it_bpkp;
